@@ -42,7 +42,7 @@ Return the top element in the stack after applying all operations. If there are 
 
 Input
 
-`ops = ["1", "5", "DUP", "3", "-"]`
+`ops = [1, 5, DUP, 3, -]`
 
   
 
@@ -78,7 +78,7 @@ We return the top element which is `-2`
 
 Input 
 
-`ops = ["+"]`
+`ops = [+]`
 
   
 
