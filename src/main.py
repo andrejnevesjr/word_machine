@@ -1,28 +1,67 @@
 import os
-import re
+from time import time
 from typing import List
+from queue import LifoQueue
+import timeit
+from aux.read_file import ReadFile
 
+def word_commands(data: List) -> int:
+    myStack = LifoQueue()
+    list_index = 0
+    list_size = len(data)-1
 
-def read_file() -> List:
+    while list_index <= list_size:
 
-    list_of_entries = []
-    list_of_expected_results = []
+        current_value = data[list_index]
 
-    with open(os.path.abspath(os.path.join('..', os.getcwd())) + "/resource/tests.txt", encoding='utf-8') as file:
-        for line in file:
-            entry, result = line.split("|")
-            list_of_entries.append(entry.split(","))
-            list_of_expected_results.append(result.strip())
+        if (current_value == "DUP" and myStack._qsize() > 0):
 
-    return list_of_entries, list_of_expected_results
+            top_stack = myStack.get()
+            myStack.put(top_stack)
+            myStack.put(top_stack)
+
+        elif (current_value == "POP" and myStack._qsize() > 0):
+            myStack.get()
+
+        elif (current_value == "+" and myStack._qsize() > 1):
+
+            first_value = myStack.get()
+            second_value = myStack.get()
+            myStack.put(first_value + second_value)
+
+        elif (current_value == "-" and myStack._qsize() > 1):
+
+            first_value = myStack.get()
+            second_value = myStack.get()
+            myStack.put(first_value - second_value)
+
+        else:
+            try:
+                myStack.put(int(current_value))
+            except (ValueError, TypeError):
+                return -1
+
+        list_index += 1
+
+    return myStack.get()
 
 
 def main():
-    print("Starting the Challenge!")
-    data, expected_result = read_file()
-    for item in data:
-        print(item)
-    print(expected_result)
+
+    start = timeit.default_timer()
+    # print("Starting the Challenge!")
+
+    rfile = ReadFile()
+
+    # Read file
+    data, expected_result = rfile.read_file("/resource/tests.txt")
+
+    result = word_commands(data[1])
+
+    # print("Finishing the Challenge!")
+    stop = timeit.default_timer()
+    elapsed_time = stop - start
+    print("Program Executed in "+str(elapsed_time))
 
 
 if __name__ == '__main__':
